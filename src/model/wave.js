@@ -11,8 +11,14 @@ module.exports = (sequelize) => {
                 type: DataTypes.BLOB,
                 allowNull: false
             },
+            // pode ser util pra ter uma imagem do wave no site
             image_url: {
                 type: DataTypes.STRING,
+            },
+            // só o owner pode ouvir
+            is_private: {
+                type: DataTypes.BOOLEAN,
+                default: false
             }
         },
         {

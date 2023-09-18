@@ -1,5 +1,5 @@
 const { Sequelize } = require('sequelize');
-const { applyExtraSetup } = require('./extra-setup.js');
+const { buildRelationships } = require('./extra-setup.js');
 const sequelize = new Sequelize(
   process.env.DATABASE_URL,
   {
@@ -37,5 +37,5 @@ const models = [
 for (const model of models) {
   model(sequelize)
 }
-applyExtraSetup(sequelize);
+buildRelationships(sequelize);
 module.exports = sequelize
