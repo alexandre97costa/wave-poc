@@ -1,0 +1,51 @@
+- utilizadores [ tipo_id | utilizador_id ]
+	-> get
+	-> post (com req body)
+	-> patch (tornar agente)
+	-> put (editar perfil)
+	-> delete
+
+// este pode ser chamado scans ou wtv
+- carimbos [ utilizador_id | ponto_interesse_id | evento_id ]
+	-> get
+	-> post (com req body)
+
+- reservas [ utilizador_id | evento_id ]
+	-> get
+	-> post (com req body)
+	-> put
+
+- eventos [ tipo_evento_id | ponto_interesse_id ]
+	-> get
+	-> post (com req body)
+	-> put
+	-> delete
+
+// nao ha endpoints de sessao, vai-se sempre buscar a sua info a partir do endpoint do evento
+
+- pontos_interesse [ ponto_interesse_id | freguesia_id | agente_turistico_id | tipo_interesse_id ]
+	-> get (se vem com id, incluir eventos e recompensas)
+	-> post (com req body)
+	-> put
+	-> delete
+
+- recompensas [ recompensa_id | ponto_interesse_id | tipo_interesse_id ]
+	-> get
+	-> post (com req body)
+	-> put
+	-> delete
+
+- vouchers [ utilizador_id | recompensa_id ]
+	-> get
+	-> post (com req body)
+
+- distritos [ distrito_id | responsavel_regiao_id ]
+	-> get (inclui municipios e freguesias com inner join; aka include no sequelize)
+	-> patch (atribuir responsavel)
+
+- tipo_interesse
+	-> get
+- tipo_evento
+	-> get
+- tipo_utilizador
+	-> get
