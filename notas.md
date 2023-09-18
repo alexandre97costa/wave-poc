@@ -1,0 +1,5 @@
+- waves privados ou publicos (flag para que seja obrigatorio inicio de sessão do owner)
+- histórico de listens (com timestamp, user)
+- waves favoritos
+- posso ouvir os audios que já scaneei na minha area pessoal do site
+- 
