@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize')
 const bcrypt = require('bcrypt')
 
 module.exports = (sequelize) => {
-    sequelize.define('utilizador',
+    sequelize.define('user',
         {
             nome: {
                 type: DataTypes.STRING,
@@ -40,41 +40,23 @@ module.exports = (sequelize) => {
                     }
                 }
             },
-            data_nascimento: {
-                type: DataTypes.DATEONLY,
+            is_admin: {
+                type: DataTypes.BOOLEAN,
                 allowNull: false,
-                validate: {
-                    notNull: { msg: 'A data de nascimento não pode estar vazia.' },
-                    isDate: { msg: 'A data de nascimento inserida não é valida.' },
-                    isBefore: {
-                        args: new Date(new Date().setFullYear(new Date().getFullYear() - 13)).toString(),
-                        msg: 'Precisa de ter mais de 13 anos para se resgistar.'
-                    }
-                }
-            },
-            pontos: {
-                type: DataTypes.INTEGER,
-                allowNull: false,
-                defaultValue: 0,
-                validate: {
-                    min: {
-                        args: -1,
-                        msg: 'Os pontos não podem ser negativos.'
-                    }
-                }
+                default: false
             }
         },
         {
-            name: { singular: 'utilizador', plural: 'utilizadores' },
+            name: { singular: 'user', plural: 'users' },
             underscored: true, // passa de 'createdAt' para 'created_at'. O postgres agradece :)
             freezeTableName: true, // não faz plurais nas relações com outras tabelas. Os devs agradecem :D
             paranoid: true, // na prática, faz com que os records não sejam eliminados, mas sim escondidos (soft-delete) 
             timestamps: true, // created_at, updated_at, e deleted_at
             hooks: {
-                beforeCreate: (utilizador) => {
+                beforeCreate: (user) => {
                     // capitalizar o nome
-                    utilizador.nome =
-                        utilizador.nome
+                    user.nome =
+                        user.nome
                             .trim()
                             .split(' ')
                             .map(word => {
@@ -83,43 +65,30 @@ module.exports = (sequelize) => {
                             .join(' ');
 
                     // encriptar password
-                    return bcrypt.hash(utilizador.password, 10)
-                        .then(hash => { utilizador.password = hash; })
+                    return bcrypt.hash(user.password, 10)
+                        .then(hash => { user.password = hash; })
                         .catch(err => { throw new Error(err); });
                 },
-                beforeUpdate: (utilizador) => {
+                beforeUpdate: (user) => {
                     // se no update foi mudada a passe, é preciso encriptá-la
-                    if (utilizador.previous().hasOwnProperty('password')) {
-                        return bcrypt.hash(utilizador.password, 10)
+                    if (user.previous().hasOwnProperty('password')) {
+                        return bcrypt.hash(user.password, 10)
                             .then(hash => {
-                                utilizador.password = hash;
-                                console.log('nova: ', utilizador.password)
+                                user.password = hash;
+                                console.log('nova: ', user.password)
                             })
                             .catch(err => { throw new Error(err); });
                     }
                 },
-                afterDestroy: async (utilizador) => {
+                afterDestroy: async (user) => {
+
+                    // quando o user for eliminado, eliminar tb records relacionados com ele
+
+                    /* exemplo: 
 
                     await sequelize.models.reserva
-                        .destroy({ where: { visitante_id: utilizador.id }, individualHooks: true })
-
-                    await sequelize.models.comentario_avaliacao
-                        .destroy({ where: { visitante_id: utilizador.id }, individualHooks: true })
-
-                    await sequelize.models.scan_evento
-                        .destroy({ where: { visitante_id: utilizador.id }, individualHooks: true })
-
-                    await sequelize.models.scan_ponto_interesse
-                        .destroy({ where: { visitante_id: utilizador.id }, individualHooks: true })
-
-                    await sequelize.models.candidatura_at
-                        .destroy({ where: { visitante_id: utilizador.id }, individualHooks: true })
-
-                    await sequelize.models.voucher
-                        .destroy({ where: { visitante_id: utilizador.id }, individualHooks: true })
-
-                    await sequelize.models.ponto_interesse
-                        .destroy({ where: { agente_turistico_id: utilizador.id }, individualHooks: true })
+                        .destroy({ where: { visitante_id: user.id }, individualHooks: true })
+                    */
 
                 }
             }

@@ -1,6 +1,7 @@
 const { Sequelize } = require('sequelize');
 const { applyExtraSetup } = require('./extra-setup.js');
 const sequelize = new Sequelize(
+  // todo: database configs
   process.env.DATABASE_URL,
   {
     dialect: 'postgres',
@@ -31,25 +32,8 @@ const sequelize = new Sequelize(
   }
 )
 const models = [
-  require('../model/candidatura_at'),
-  require('../model/comentario_avaliacao'),
-  require('../model/distrito'),
-  require('../model/evento'),
-  require('../model/freguesia'),
-  require('../model/imagem'),
-  require('../model/municipio'),
-  require('../model/ponto_interesse'),
-  require('../model/ponto_interesse_recompensa'),
-  require('../model/scan_evento'),
-  require('../model/scan_ponto_interesse'),
-  require('../model/recompensa'),
-  require('../model/reserva'),
-  require('../model/sessao'),
-  require('../model/tipo_evento'),
-  require('../model/tipo_interesse'),
-  require('../model/tipo_utilizador'),
-  require('../model/utilizador'),
-  require('../model/voucher')
+  require('../model/user'),
+  require('../model/wave')
 ]
 for (const model of models) {
   model(sequelize)

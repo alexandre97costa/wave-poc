@@ -14,17 +14,8 @@ const { dev: devClass } = require('./_dev/dev')
 const dev = new devClass;
 
 const dev_routes = require('./routes/dev')
-
-const evento_routes = require('./routes/evento')
-const historico_routes = require('./routes/historico')
-const local_routes = require('./routes/local')
-const ponto_interesse_routes = require('./routes/ponto_interesse')
-const recompensa_routes = require('./routes/recompensa')
-const reserva_routes = require('./routes/reserva')
-const scan_routes = require('./routes/scan')
-const tipos_routes = require('./routes/tipos')
-const utilizador_routes = require('./routes/utilizador')
-const voucher_routes = require('./routes/voucher')
+const wave_routes = require('./routes/wave')
+const user_routes = require('./routes/user')
 
 //* Middlewares
 app.use(cors());
@@ -58,11 +49,13 @@ app.use(
         algorithms: [process.env.JWT_ALGORITHM],
     }).unless({
         path: [
-            { url: '/utilizador', methods: ['POST'] },
-            { url: '/utilizador/login', methods: ['POST'] },
+            { url: '/user', methods: ['POST'] },
+            { url: '/user/login', methods: ['POST'] },
 
+            /*
             // ? para os scans feitos fora da app, nao precisam de auth porque são redirecionados para o micro site
             { url: /^\/scan/, methods: ['GET'] },
+            */
 
             // ? para cenas que nos ajudam em modo dev
             // ? os controllers devolvem 403 se estiver em prod
@@ -82,18 +75,10 @@ app.use(function (e, req, res, next) {
 });
 
 //* Rotas
-app.use('/evento', evento_routes)
-app.use('/historico', historico_routes)
-app.use('/local', local_routes)
-app.use('/pi', ponto_interesse_routes)
-app.use('/recompensa', recompensa_routes)
-app.use('/reserva', reserva_routes)
-app.use('/scan', scan_routes)
-app.use('/tipos', tipos_routes)
-app.use('/utilizador', utilizador_routes)
-app.use('/voucher', voucher_routes)
-
 app.use('/dev', dev_routes)
+app.use('/wave', wave_routes)
+app.use('/user', user_routes)
+
 
 // Rota de Introdução
 app.use('/', (req, res) => {

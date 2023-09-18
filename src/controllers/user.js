@@ -7,10 +7,9 @@ const { dev: devClass } = require('../_dev/dev')
 const dev = new devClass;
 require('dotenv').config()
 const {
-    tipo_utilizador,
-    utilizador
+    wave,
+    user
 } = sequelize.models
-// * no final, podem-se apagar os que não estão a ser usados
 
 
 module.exports = {

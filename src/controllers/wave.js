@@ -6,17 +6,8 @@ const dev = new devClass;
 // * https://sequelize.org/docs/v6/core-concepts/model-querying-basics/#operators
 
 const {
-    ponto_interesse,
-    pontos_ponto_interesse,
-    comentario_avaliacao,
-    imagem,
-    utilizador,
-    freguesia,
-    tipo_interesse,
-    municipio,
-    distrito,
-    ponto_interesse_recompensa,
-    recompensa,
+    user,
+    wave
 } = sequelize.models
 
 module.exports = {
