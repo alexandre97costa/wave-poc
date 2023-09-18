@@ -4,14 +4,14 @@ const bcrypt = require('bcrypt')
 module.exports = (sequelize) => {
     sequelize.define('user',
         {
-            nome: {
+            name: {
                 type: DataTypes.STRING,
                 allowNull: false,
                 validate: {
-                    notNull: { msg: 'O nome não pode estar vazio.' },
+                    notNull: { msg: 'O name não pode estar vazio.' },
                     is: {
                         args: /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/g, // só letras e espaços, incluindo acentos
-                        msg: 'O nome só pode ter letras e espaços.'
+                        msg: 'O name só pode ter letras e espaços.'
                     }
                 }
             },
@@ -54,9 +54,9 @@ module.exports = (sequelize) => {
             timestamps: true, // created_at, updated_at, e deleted_at
             hooks: {
                 beforeCreate: (user) => {
-                    // capitalizar o nome
-                    user.nome =
-                        user.nome
+                    // capitalizar o name
+                    user.name =
+                        user.name
                             .trim()
                             .split(' ')
                             .map(word => {

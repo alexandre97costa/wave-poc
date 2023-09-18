@@ -1,11 +1,7 @@
 const { Sequelize } = require('sequelize');
 const { applyExtraSetup } = require('./extra-setup.js');
 const sequelize = new Sequelize(
-  // todo: database configs
-  //process.env.DATABASE_URL,
-  'pi4',              // nome da db
-  'postgres',         // user
-  'postgres',         // pass
+  process.env.DATABASE_URL,
   {
     dialect: 'postgres',
     logging: console.log,
