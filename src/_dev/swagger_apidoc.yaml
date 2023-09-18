@@ -1,0 +1,296 @@
+openapi: 3.0.0
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/ALEXANDRE97COSTA_1/Wave_POC/1.0.0
+info:
+  version: 0.1.0
+  title: wave-poc-api
+  description: A proof-of-concept API for the Wave brand.
+  # todo: user routes
+tags:
+  - name: Wave
+    description: Everything related to the waves the user can listen to.
+  - name: User
+    description: Everything related to user management.
+paths:
+  "/wave":
+    get:
+      tags:
+        - Wave
+      description: Returns all waves
+      operationId: getAllWaves
+      parameters:
+        - in: query
+          name: ownerId
+          description: filter by Owner ID
+          schema:
+            $ref: '#/components/schemas/User/properties/id'
+        - in: query
+          name: skip
+          description: number of records to skip
+          schema:
+            type: integer
+            format: int32
+            example: 0
+        - in: query
+          name: limit
+          description: max number of records to return
+          schema:
+            type: integer
+            format: int32
+            example: 5
+      responses:
+        "200":
+          description: All the waves
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Wave'
+    post: 
+      tags:
+        - Wave
+      description: Creates a new wave
+      operationId: createWave
+      requestBody:
+        description: Create a new wave
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Wave'
+      responses:
+        "200":
+          description: The wave that was created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wave'
+  "/wave/{id}":
+    get:
+      tags:
+        - Wave
+      description: Returns a specific wave
+      operationId: getWaveById
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        "200":
+          description: A single wave
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wave'
+    put:
+      tags:
+        - Wave
+      description: Update a single wave
+      operationId: updateWaveById
+      parameters:
+        - $ref: '#/components/parameters/id'
+      requestBody:
+        description: The new wave information
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                waveId:
+                  $ref: '#/components/schemas/Wave/properties/id'
+                waveRecord:
+                  $ref: '#/components/schemas/Wave'
+      responses:
+        "200":
+          description: Wave updated successfully
+    patch:
+      tags:
+        - Wave
+      description: Update a single wave's listen count.
+      operationId: incrementWaveListenCount
+      parameters:
+        - $ref: '#/components/parameters/id'
+      requestBody:
+        description: The new wave information
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                # no need to have more information, just needs to increment
+                waveId:
+                  $ref: '#/components/schemas/Wave/properties/id'
+      responses:
+        "200":
+          description: Wave updated successfully
+    delete:
+      tags:
+        - Wave
+      description: Delete a single wave.
+      operationId: deleteWave
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        "200":
+          description: Wave deleted successfully
+  "/user":
+    get:
+      tags:
+        - User
+      description: Returns all users
+      operationId: getAllUsers
+      parameters:
+        - in: query
+          name: skip
+          description: number of records to skip
+          schema:
+            type: integer
+            format: int32
+            example: 0
+        - in: query
+          name: limit
+          description: max number of records to return
+          schema:
+            type: integer
+            format: int32
+            example: 5
+      responses:
+        "200":
+          description: All the users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+    post: 
+      tags:
+        - User
+      description: Creates a new user
+      operationId: createUser
+      requestBody:
+        description: Create a new user
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        "200":
+          description: The user that was created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  "/user/{id}":
+    get:
+      tags:
+        - User
+      description: Returns a specific user
+      operationId: getUserById
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        "200":
+          description: A single user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    put:
+      tags:
+        - User
+      description: Update a single user
+      operationId: updateUserById
+      parameters:
+        - $ref: '#/components/parameters/id'
+      requestBody:
+        description: The new user information
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                waveId:
+                  $ref: '#/components/schemas/User/properties/id'
+                waveRecord:
+                  $ref: '#/components/schemas/User'
+      responses:
+        "200":
+          description: Wave updated successfully
+    delete:
+      tags:
+        - User
+      description: Delete a single user.
+      operationId: deleteUser
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        "200":
+          description: User deleted successfully
+
+components:
+  parameters:
+    id:
+      in: path
+      name: id
+      schema:
+        type: integer
+        minimum: 1
+      required: true
+      description: Correspondes to any id
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        name:
+          type: string
+          example: Joaquim Barreiros
+        email:
+          type: string
+          example: joquim.b@email.com
+        password:
+          type: string
+          example: '12345'
+        phone:
+          type: string
+          example: '+351 987 654 321'
+        isManager:
+          type: boolean
+          example: false
+      xml:
+        name: user
+    Wave:
+      required:
+        - id
+        - name
+        - sound
+        - listenCount
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        name:
+          type: string
+          example: As primeiras palavas da Jacinta
+        sound:
+          type: string
+          format: binary
+        listenCount:
+          type: integer
+          format: int64
+          example: 454
+        photoUrl:
+          type: string
+          example: https://images.unsplash.com/photo-1491013516836-7db643ee125a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1925&q=80
+        ownerId:
+          $ref: '#/components/schemas/User/properties/id'
+      xml:
+        name: wave
