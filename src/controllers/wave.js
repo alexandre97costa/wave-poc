@@ -6,8 +6,8 @@ const dev = new devClass;
 // * https://sequelize.org/docs/v6/core-concepts/model-querying-basics/#operators
 
 const {
-    user,
-    wave
+    User,
+    Wave
 } = sequelize.models
 
 module.exports = {
@@ -15,17 +15,10 @@ module.exports = {
     get: async (req, res) => {
         // * filtros
         const id = req.params?.id ?? 0
-        const nome_desc = req.query?.nome_desc ?? '' // pesquisa nos dois
-        const tipo_interesse_id = req.query?.tipo_interesse_id ?? 0
-        const freguesia_id = req.query?.freguesia_id ?? 0
-        const agente_turistico_id = req.query?.agente_turistico_id ?? 0
-        const distrito_id = req.query?.distrito_id ?? 0
-        const min_scans = req.query?.min_scans ?? 0
-        const min_aval = req.query?.min_aval ?? 0
-        // todo: pontos
+        const name = req.query?.name ?? '' 
 
         // * ordenação e paginação
-        const order = req.query?.order ?? 'nome'
+        const order = req.query?.order ?? 'name'
         const direction = req.query?.direction ?? 'asc'
         const offset = req.query?.offset ?? 0
         const limit = req.query?.limit ?? 0
@@ -33,9 +26,12 @@ module.exports = {
         // * outras opções
         const incluir_eliminados = !!req.query?.incluir_eliminados // incluir também os PIs eliminados
         const so_eliminados = !!req.query?.so_eliminados           // pedir só os PIs eliminados
-        const validado = !!(req.query?.validado ?? true)         // True: Só PIs validados; False: Só PIs por validar
 
-        await ponto_interesse
+        // ? pode ser util manter este campo pra usar no is_private
+        // const validado = !!(req.query?.validado ?? true)         // True: Só PIs validados; False: Só PIs por validar
+        
+
+        await Wave
             .findAndCountAll({
                 where: {
                     id: !!+id ?

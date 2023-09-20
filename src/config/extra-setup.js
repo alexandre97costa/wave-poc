@@ -1,19 +1,19 @@
 function buildRelationships(sequelize) {
-    const { user, wave } = sequelize.models
+    const { User, Wave } = sequelize.models
 
     // relações 
 
     // ? owner
-    user.hasMany(wave, { foreignKey: 'owner_id' })
-    wave.belongsTo(user, { foreignKey: 'owner_id', onDelete: 'CASCADE' })
+    User.hasMany(Wave, { foreignKey: 'owner_id' })
+    Wave.belongsTo(User, { foreignKey: 'owner_id', onDelete: 'CASCADE' })
 
     // ? listen
-    user.belongsToMany(wave, { through: 'listen'})
-    wave.belongsToMany(user, { through: 'listen'})
+    User.belongsToMany(Wave, { through: 'Listen'})
+    Wave.belongsToMany(User, { through: 'Listen'})
     
     // ? favourites
-    user.belongsToMany(wave, { through: 'favourite'})
-    wave.belongsToMany(user, { through: 'favourite'})
+    User.belongsToMany(Wave, { through: 'Favourite'})
+    Wave.belongsToMany(User, { through: 'Favourite'})
 }
 
 module.exports = { buildRelationships };

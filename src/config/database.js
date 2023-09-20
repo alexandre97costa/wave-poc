@@ -13,7 +13,6 @@ const databaseConfigs = {
 			afterCreate: model => {
 				const ignoreModels = [
 					// mete aqui as tabelas que NÃO queres ter a aparecer na consola quando são criadas.
-					'uma-cena-qualquer'
 				]
 				if (!ignoreModels.includes(model.constructor.name)) {
 					console.log('\x1b[37m\x1b[46m ' + model.constructor.name + '(#' + model.id + ') criado \x1b[0m ')
