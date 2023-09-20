@@ -52,16 +52,9 @@ app.use(
             { url: '/user', methods: ['POST'] },
             { url: '/user/login', methods: ['POST'] },
 
-            /*
-            // ? para os scans feitos fora da app, nao precisam de auth porque são redirecionados para o micro site
-            { url: /^\/scan/, methods: ['GET'] },
-            */
-
             // ? para cenas que nos ajudam em modo dev
             // ? os controllers devolvem 403 se estiver em prod
             { url: /^\/dev/ },
-
-            // { url: /^\// },
         ]
     })
 );

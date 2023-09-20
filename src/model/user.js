@@ -2,16 +2,16 @@ const { DataTypes } = require('sequelize')
 const bcrypt = require('bcrypt')
 
 module.exports = (sequelize) => {
-    sequelize.define('user',
+    sequelize.define('User',
         {
             name: {
                 type: DataTypes.STRING,
                 allowNull: false,
                 validate: {
-                    notNull: { msg: 'O name não pode estar vazio.' },
+                    notNull: { msg: 'Your name is required' },
                     is: {
                         args: /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/g, // só letras e espaços, incluindo acentos
-                        msg: 'O name só pode ter letras e espaços.'
+                        msg: 'Your name can only have letters and spaces'
                     }
                 }
             },
@@ -20,30 +20,30 @@ module.exports = (sequelize) => {
                 allowNull: false,
                 unique: true,
                 validate: {
-                    notNull: { msg: 'O email não pode estar vazio.' },
-                    isEmail: { msg: 'O email inserido não é válido.' }
+                    notNull: { msg: 'The email is required' },
+                    isEmail: { msg: 'The email must be valid' }
                 }
             },
             password: {
                 type: DataTypes.STRING,
                 allowNull: false,
                 validate: {
-                    notNull: { msg: 'A password não pode estar vazia.' },
-                    notEmpty: { msg: 'A password não pode estar vazia.' },
+                    notNull: { msg: 'The password is required' },
+                    notEmpty: { msg: 'Your password cannot be empty' },
                     min: {
                         args: [6],
-                        msg: 'A password precisa de ter no minimo 6 carateres'
+                        msg: 'Your password needs to have at least 6 characters'
                     },
                     is: {
                         args: ['^[A-Za-zÀ-ÖØ-öø-ÿ\\.\\/\\d\\w@$!%*#?&]{6,}$'],
-                        msg: 'A password precisa de ter letras, numeros, e um dos carateres especiais: _ @ $ ! % * # ? &.'
+                        msg: 'Your password needs to have letters, numbers, and at least one of this characters: _ @ $ ! % * # ? &'
                     }
                 }
             },
             is_admin: {
                 type: DataTypes.BOOLEAN,
                 allowNull: false,
-                default: false
+                defaultValue: false
             }
         },
         {

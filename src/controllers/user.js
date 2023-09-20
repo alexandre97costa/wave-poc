@@ -7,8 +7,8 @@ const { dev: devClass } = require('../_dev/dev')
 const dev = new devClass;
 require('dotenv').config()
 const {
-    wave,
-    user
+    User,
+    Wave
 } = sequelize.models
 
 
@@ -25,8 +25,8 @@ module.exports = {
 
         const { email, password } = req.body
 
-        const user = await utilizador
-            .findOne({ where: { email: email }, include: { model: tipo_utilizador, attributes: ['nome'] } })
+        const user = await User
+            .findOne({ where: { email: email } })
             .then(response => { return response?.dataValues })
 
         if (!user) return res.status(404).json({ msg: 'Utilizador não encontrado' })
@@ -40,11 +40,8 @@ module.exports = {
 
         const token = {
             id: user.id,
-            nome: user.nome,
-            email: user.email,
-            pontos: user.pontos,
-            tipo: user.tipo_utilizador_id,
-            tipo_nome: user.tipo_utilizador.nome
+            name: user.name,
+            email: user.email
         }
 
         const secret = process.env.JWT_SECRET
@@ -57,42 +54,33 @@ module.exports = {
         }
 
         return res.status(200).json({
-            msg: 'Bem vindo ' + user.nome + '! 🤩',
+            msg: 'Welcome ' + user.name + '! 🌊',
             token: jwt.sign(token, secret, options),
-            user: user.id
+            user_id: user.id
         });
     },
 
     get: async (req, res) => {
         // * filtros
         const id = req.params?.id ?? 0
-        const nome = req.query?.nome ?? '%'
-        const tipo_utilizador_id = req.query?.tipo_utilizador_id ?? 0
+        const name = req.query?.name ?? '%'
 
         // * ordenação e paginação
-        const order = req.query?.order ?? 'nome'
+        const order = req.query?.order ?? 'name'
         const direction = req.query?.direction ?? 'asc'
         const offset = req.query?.offset ?? 0
         const limit = req.query?.limit ?? 0
 
 
-        await utilizador
+        await User
             .findAndCountAll({
                 where: {
                     id: !!+id ?
                         +id :
                         { [Op.ne]: 0 },
                     nome: {
-                        [Op.iLike]: '%' + nome + '%'
+                        [Op.iLike]: '%' + name + '%'
                     },
-                    tipo_utilizador_id: !!+tipo_utilizador_id ?
-                        +tipo_utilizador_id :
-                        { [Op.ne]: 0 },
-                },
-                include: {
-                    model: tipo_utilizador,
-                    require: true,
-                    attributes: ['nome', 'observacoes']
                 },
                 attributes: { exclude: ['password'] },
                 order: [[order, direction]],
@@ -101,7 +89,7 @@ module.exports = {
             })
             .then(output => {
                 return !output.count ?
-                    res.status(404).json({ msg: 'Não existem pontos de interesse que correspondam aos filtros solicitados.' }) :
+                    res.status(404).json({ msg: 'No results.' }) :
                     res.status(200).json({ data: output.rows, count: output.count })
             })
             .catch(error => {
@@ -114,31 +102,26 @@ module.exports = {
     post: async (req, res) => {
 
         const required_params = [
-            'nome',
+            'name',
             'email',
-            'data_nasc',
             'password'
         ]
         const check_all_required = required_params.every(param => req.body.hasOwnProperty(param))
         if (!check_all_required)
             return res.status(400).json({ msg: 'Faltam dados para poder criar o utilizador.' })
 
-        const { nome, email, data_nasc, password, tipo } = req.body
+        const { name, email, password } = req.body
 
-        const utilizadorJaExiste = await utilizador.findOne({ where: { email: email } })
+        const utilizadorJaExiste = await User.findOne({ where: { email: email } })
 
         if (utilizadorJaExiste)
             return res.status(400).json({ msg: 'Utilizador com esse email já existe.' })
 
-        await utilizador
+        await User
             .create({
-                nome: nome,
+                name: name,
                 email: email,
-                data_nascimento: data_nasc,
                 password: password,
-                // em dev, pode-se criar um user que nao seja visitante logo à partida
-                // em prod, todos os utilizadores começam como visitantes
-                tipo_utilizador_id: process.env.MODE == "dev" ? +tipo : 1
             })
             .then(output => {
                 return res.status(200).json({
@@ -172,7 +155,7 @@ module.exports = {
         const { id } = req.params
 
         const required_params = [
-            'nome',
+            'name',
             'email',
             'data_nascimento'
         ]
@@ -180,10 +163,10 @@ module.exports = {
         if (!check_all_required)
             return res.status(400).json({ msg: 'Faltam dados para poder editar o utilizador.' })
 
-        const { nome, email, data_nascimento } = req.body
+        const { name, email } = req.body
 
         // verificar se o utilizador realmente existe
-        const _utilizador = await utilizador.findByPk(id)
+        const _utilizador = await User.findByPk(id)
         if (_utilizador === null)
             return res.status(404).json({ msg: 'O utilizador fornecido não existe ou foi eliminado.' })
 
@@ -230,7 +213,7 @@ module.exports = {
 
 
         // verificar se o utilizador realmente existe
-        const _utilizador = await utilizador.findByPk(id)
+        const _utilizador = await User.findByPk(id)
         if (_utilizador === null)
             return res.status(404).json({ msg: 'O utilizador fornecido não existe ou foi eliminado.' })
 
@@ -268,7 +251,7 @@ module.exports = {
         const { novo_tipo } = req.body
 
         // verificar se o utilizador realmente existe
-        const _utilizador = await utilizador.findByPk(id)
+        const _utilizador = await User.findByPk(id)
         if (_utilizador === null)
             return res.status(404).json({ msg: 'O utilizador fornecido não existe ou foi eliminado.' })
 
@@ -297,7 +280,7 @@ module.exports = {
         }
 
         // verificar se o utilizador realmente existe
-        const _utilizador = await utilizador.findByPk(id)
+        const _utilizador = await User.findByPk(id)
         if (_utilizador === null)
             return res.status(404).json({ msg: 'O utilizador fornecido não existe ou já foi eliminado.' })
 
@@ -326,16 +309,5 @@ module.exports = {
                 dev.error(error)
                 return
             })
-    },
-
-    tipos: async (req, res) => {
-        await tipo_utilizador
-            .findAll({ attributes: ['id', 'nome', 'observacoes'], order: [['id', 'ASC']] })
-            .then(output => { res.status(200).json({ tipos: output }) })
-            .catch(e => {
-                res.status(400).json({ error })
-                dev.error(e)
-                return
-            })
-    },
+    }
 }

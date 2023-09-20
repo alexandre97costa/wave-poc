@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize')
 
 module.exports = (sequelize) => {
-    sequelize.define('wave',
+    sequelize.define('Wave',
         {
             name: {
                 type: DataTypes.STRING,
@@ -18,7 +18,11 @@ module.exports = (sequelize) => {
             // só o owner pode ouvir
             is_private: {
                 type: DataTypes.BOOLEAN,
-                default: false
+                defaultValue: false
+            },
+            codigo_uuid: {
+                type: DataTypes.UUID,
+                defaultValue: DataTypes.UUIDV4
             }
         },
         {
