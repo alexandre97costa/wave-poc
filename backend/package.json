@@ -4,9 +4,9 @@
   "private": true,
   "main": "src/app.js",
   "scripts": {
-    "prestart": "npm i --silent",
+    "prestart": "pnpm i",
     "start": "set MODE=prod&& node src/app.js",
-    "predev": "npm i --silent",
+    "predev": "pnpm i",
     "dev": "set MODE=dev&& nodemon -e yaml,js,json --trace-warnings "
   },
   "dependencies": {
