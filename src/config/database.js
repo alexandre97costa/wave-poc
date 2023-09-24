@@ -3,10 +3,10 @@ const { buildRelationships } = require('./extra-setup.js');
 
 const databaseConfigs = {
 	dialect: 'postgres',
-	logging: console.log,
-	dialectOptions: {
-		ssl: { rejectUnauthorized: false }
-	},
+	// logging: console.log,
+	// dialectOptions: {
+	// 	ssl: { rejectUnauthorized: false }
+	// },
 	define: {
 		// hooks globais, atingem todos os modelos
 		hooks: {
