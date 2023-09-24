@@ -51,10 +51,14 @@ app.use(
         path: [
             { url: '/user', methods: ['POST'] },
             { url: '/user/login', methods: ['POST'] },
+<<<<<<< Updated upstream
 
             // ? para cenas que nos ajudam em modo dev
             // ? os controllers devolvem 403 se estiver em prod
             { url: /^\/dev/ },
+=======
+            { url: /^\/dev/ }
+>>>>>>> Stashed changes
         ]
     })
 );
