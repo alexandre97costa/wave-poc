@@ -30,9 +30,9 @@ module.exports = (sequelize) => {
             // para poupar nos pedidos à API de códigos QR, podemos guardar um binário aqui
             qr_binary: {
                 type: DataTypes.STRING
-            }
+            },
 
-            // para guardar a info de altura das barras do produto
+            // para guardar a altura das barras do produto
             plot_points: {
                 type: DataTypes.ARRAY(DataTypes.SMALLINT)
             }
