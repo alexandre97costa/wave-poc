@@ -7,13 +7,8 @@ const { dev: devClass } = require('../_dev/dev')
 const dev = new devClass;
 require('dotenv').config()
 const {
-<<<<<<< Updated upstream
     User,
     Wave
-=======
-    Wave,
-    User
->>>>>>> Stashed changes
 } = sequelize.models
 
 
@@ -31,11 +26,7 @@ module.exports = {
         const { email, password } = req.body
 
         const user = await User
-<<<<<<< Updated upstream
             .findOne({ where: { email: email } })
-=======
-            .findOne({ where: { email: email }})
->>>>>>> Stashed changes
             .then(response => { return response?.dataValues })
 
         if (!user) return res.status(404).json({ msg: 'Utilizador não encontrado' })
@@ -50,10 +41,7 @@ module.exports = {
         const token = {
             id: user.id,
             name: user.name,
-<<<<<<< Updated upstream
             email: user.email
-=======
->>>>>>> Stashed changes
         }
 
         const secret = process.env.JWT_SECRET
@@ -66,11 +54,7 @@ module.exports = {
         }
 
         return res.status(200).json({
-<<<<<<< Updated upstream
             msg: 'Welcome ' + user.name + '! 🌊',
-=======
-            msg: 'Bem vindo ' + user.name + '! 🤩',
->>>>>>> Stashed changes
             token: jwt.sign(token, secret, options),
             user_id: user.id
         });
@@ -94,15 +78,9 @@ module.exports = {
                     id: !!+id ?
                         +id :
                         { [Op.ne]: 0 },
-<<<<<<< Updated upstream
                     nome: {
                         [Op.iLike]: '%' + name + '%'
                     },
-=======
-                    name: {
-                        [Op.iLike]: '%' + name + '%'
-                    }
->>>>>>> Stashed changes
                 },
                 attributes: { exclude: ['password'] },
                 order: [[order, direction]],
@@ -111,11 +89,7 @@ module.exports = {
             })
             .then(output => {
                 return !output.count ?
-<<<<<<< Updated upstream
                     res.status(404).json({ msg: 'No results.' }) :
-=======
-                    res.status(404).json({ msg: 'Não existem users que correspondam aos filtros solicitados.' }) :
->>>>>>> Stashed changes
                     res.status(200).json({ data: output.rows, count: output.count })
             })
             .catch(error => {
