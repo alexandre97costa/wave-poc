@@ -1,6 +1,6 @@
 {
-  "name": "pi4-backend",
-  "version": "0.0.0",
+  "name": "wave-backend",
+  "version": "0.0.1",
   "private": true,
   "main": "src/app.js",
   "scripts": {
