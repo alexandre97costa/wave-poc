@@ -1,9 +1,8 @@
 /** @type {import('./$types').PageLoad} */
-export async function load({ params, route }) {
+export async function load({ params }) {
     return {
         wave: {
-            route,
-            params
-		}
+            uuid: params.wave
+        }
     };
 };

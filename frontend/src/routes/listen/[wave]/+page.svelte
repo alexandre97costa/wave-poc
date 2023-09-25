@@ -6,6 +6,6 @@
 
 <!-- <h2>listen/{data.wave.params}</h2> -->
 
-<p>data title: {data.wave.params.wave}</p>
+<p>UUID: {data.wave.uuid}</p>
 
 <p></p>
