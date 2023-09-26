@@ -1,8 +1,6 @@
 /** @type {import('./$types').PageLoad} */
 export async function load({ params }) {
     return {
-        wave: {
-            uuid: params.wave
-        }
+        user_id: params.user_id
     };
 };
