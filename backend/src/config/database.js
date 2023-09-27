@@ -29,14 +29,14 @@ const databaseConfigs = {
 }
 
 const sequelize =
-	process.env.DATABASE_TYPE = "LOCAL" ?
+	process.env.DATABASE_TYPE == "LOCAL" ?
 		new Sequelize(
 			"wave-poc", "postgres", "postgres",
 			databaseConfigs
 		) :
 		new Sequelize(
-			"db.gfxlddtvdakfqjtymlnp.supabase.co", "postgres", "postgres", "yZ8cywq4EhVtBw5T",
-			// process.env.DATABASE_URL_S,
+			// "db.gfxlddtvdakfqjtymlnp.supabase.co", "postgres", "postgres", "yZ8cywq4EhVtBw5T",
+			process.env.DATABASE_URL_S,
 			databaseConfigs
 		);
 
