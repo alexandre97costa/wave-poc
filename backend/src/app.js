@@ -8,7 +8,7 @@ app.set('port', process.env.PORT || 4001)
 const port = app.get('port')
 const sequelize = require('./config/database')
 sequelize.sync(
-    // { alter: true }
+    { force: true }
 )
 const { dev: devClass } = require('./_dev/dev')
 const dev = new devClass;

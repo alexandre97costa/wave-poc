@@ -78,7 +78,7 @@ module.exports = {
                     id: !!+id ?
                         +id :
                         { [Op.ne]: 0 },
-                    nome: {
+                    name: {
                         [Op.iLike]: '%' + name + '%'
                     },
                 },

@@ -3,7 +3,7 @@ const { buildRelationships } = require('./extra-setup.js');
 
 const databaseConfigs = {
 	dialect: 'postgres',
-	// logging: console.log,
+	logging: false,
 	// dialectOptions: {
 	// 	ssl: { rejectUnauthorized: false }
 	// },
@@ -28,17 +28,18 @@ const databaseConfigs = {
 	}
 }
 
-const sequelize = 
+const sequelize =
 	process.env.DATABASE_TYPE = "LOCAL" ?
 		new Sequelize(
 			"wave-poc", "postgres", "postgres",
 			databaseConfigs
 		) :
 		new Sequelize(
-			process.env.DATABASE_URL,
+			"db.gfxlddtvdakfqjtymlnp.supabase.co", "postgres", "postgres", "yZ8cywq4EhVtBw5T",
+			// process.env.DATABASE_URL_S,
 			databaseConfigs
-		) ;
-		
+		);
+
 
 const models = [
 	require('../model/user'),
