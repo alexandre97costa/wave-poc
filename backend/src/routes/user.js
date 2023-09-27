@@ -12,6 +12,5 @@ router.patch('/:id/tipo', u.mudar_tipo)
 router.patch('/:id/password', u.mudar_pw)
 router.delete('/:id', u.delete)
 
-// tipos estão no route/tipos
 
 module.exports = router;

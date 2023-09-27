@@ -1,14 +1,18 @@
 require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
+const path = require('path');
 const interceptor = require('express-interceptor')
 const { expressjwt: validate_jwt } = require('express-jwt');
+
+
 const app = express()
 app.set('port', process.env.PORT || 4001)
 const port = app.get('port')
+
 const sequelize = require('./config/database')
 sequelize.sync(
-    { force: true }
+    // { alter: true }
 )
 const { dev: devClass } = require('./_dev/dev')
 const dev = new devClass;
@@ -20,6 +24,7 @@ const user_routes = require('./routes/user')
 //* Middlewares
 app.use(cors());
 app.use(express.json());
+
 // log dos pedidos todos que o servidor recebe (incluindo o status!)
 app.use(interceptor((req, res) => {
     return {
@@ -31,7 +36,7 @@ app.use(interceptor((req, res) => {
                 ' \x1b[33m' + res.statusCode +
 
                 // params
-                (Object.keys(req.params).length !== 0 ? '\n\x1b[35m⤷ params \x1b[30m' + JSON.stringify(req.params).replaceAll('"', '\'') : '') +
+                (Object.keys(req?.params ?? {}).length !== 0 ? '\n\x1b[35m⤷ params \x1b[30m' + JSON.stringify(req?.params ?? {}).replaceAll('"', '\'') : '') +
                 // query
                 (!!req._parsedUrl.query ? '\n\x1b[35m⤷ query \x1b[30m' + req._parsedUrl.query.replaceAll('&', ' ') : '') +
                 // body
@@ -42,6 +47,7 @@ app.use(interceptor((req, res) => {
         }
     }
 }))
+
 // validação jwt (com exclusoes dentro do unless)
 app.use(
     validate_jwt({
@@ -51,6 +57,7 @@ app.use(
         path: [
             { url: '/user', methods: ['POST'] },
             { url: '/user/login', methods: ['POST'] },
+            { url: '/'},
 
             // ? para cenas que nos ajudam em modo dev
             // ? os controllers devolvem 403 se estiver em prod
@@ -58,6 +65,7 @@ app.use(
         ]
     })
 );
+
 // tratamento de erros do validate_jwt
 app.use(function (e, req, res, next) {
     if (e.name === 'UnauthorizedError')
@@ -75,11 +83,22 @@ app.use('/user', user_routes)
 
 // Rota de Introdução
 app.use('/', (req, res) => {
-    res.status(200).json({
-        msg: 'Vieste para o root. Se não era suposto, verifica o método ou o url!',
-        method: req.method,
-        url: req.baseUrl + req._parsedUrl.pathname
-    });
+
+    
+    if (req.headers['user-agent'].includes('Thunder Client')) {
+        // se for um pedido de thunder client, envia um json 200
+        return res.status(200).json({
+            msg: 'Vieste para o root. Se não era suposto, verifica o método ou o url!',
+            method: req.method,
+            url: req.baseUrl + req._parsedUrl.pathname
+        });
+    } else {
+        // se for um pedido de um browser, envia uma página html de exemplo
+        return res.status(200).sendFile(path.join(__dirname,'./root.html'));
+    }
+
+
+    
 })
 
 
