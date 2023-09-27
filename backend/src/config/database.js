@@ -28,25 +28,27 @@ const databaseConfigs = {
 	}
 }
 
-const sequelize =
-	process.env.DATABASE_TYPE == "LOCAL" ?
-		new Sequelize(
-			"wave-poc", "postgres", "postgres",
-			databaseConfigs
-		) :
-		new Sequelize(
-			// "db.gfxlddtvdakfqjtymlnp.supabase.co", "postgres", "postgres", "yZ8cywq4EhVtBw5T",
-			process.env.DATABASE_URL_S,
-			databaseConfigs
-		);
+let DATABASE_URL = () => {
+	switch (process.env.DATABASE_TYPE) {
+		case "LOCAL": return process.env.DB_URL_LOCAL;
+		case "RAILWAY": return process.env.DB_URL_RAILWAY;
+		case "SUPABASE": return process.env.DB_URL_SUPABASE;
+
+		default: return process.env.DB_URL_LOCAL;
+	}
+}
+
+const sequelize = new Sequelize(DATABASE_URL, databaseConfigs);
 
 
+// init models & relations
 const models = [
 	require('../model/user'),
 	require('../model/wave')
-]
-for (const model of models) {
-	model(sequelize)
-}
+];
+
+for (const model of models) { model(sequelize) };
+
 buildRelationships(sequelize);
-module.exports = sequelize
+
+module.exports = sequelize;
