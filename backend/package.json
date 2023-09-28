@@ -10,6 +10,7 @@
     "dev": "set MODE=dev&& nodemon -e yaml,js,json --trace-warnings "
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.36.0",
     "bcrypt": "^5.0.1",
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",

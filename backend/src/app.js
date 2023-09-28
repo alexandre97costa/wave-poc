@@ -4,16 +4,16 @@ const cors = require('cors')
 const path = require('path');
 const interceptor = require('express-interceptor')
 const { expressjwt: validate_jwt } = require('express-jwt');
-
-
 const app = express()
 app.set('port', process.env.PORT || 4001)
 const port = app.get('port')
 
+const supabase = require('./config/supabase')
 const sequelize = require('./config/database')
 sequelize.sync(
     // { alter: true }
 )
+
 const { dev: devClass } = require('./_dev/dev')
 const dev = new devClass;
 
@@ -57,7 +57,7 @@ app.use(
         path: [
             { url: '/user', methods: ['POST'] },
             { url: '/user/login', methods: ['POST'] },
-            { url: '/'},
+            { url: '/' },
 
             // ? para cenas que nos ajudam em modo dev
             // ? os controllers devolvem 403 se estiver em prod
@@ -83,8 +83,6 @@ app.use('/user', user_routes)
 
 // Rota de Introdução
 app.use('/', (req, res) => {
-
-    
     if (req.headers['user-agent'].includes('Thunder Client')) {
         // se for um pedido de thunder client, envia um json 200
         return res.status(200).json({
@@ -94,33 +92,37 @@ app.use('/', (req, res) => {
         });
     } else {
         // se for um pedido de um browser, envia uma página html de exemplo
-        return res.status(200).sendFile(path.join(__dirname,'./root.html'));
+        return res.status(200).sendFile(path.join(__dirname, './root.html'));
     }
-
-
-    
 })
-
-
 
 
 // * daqui pra baixo são só cenas para iniciar a bd como deve ser
 // * e depois iniciar o app.listen()
 
-async function assertDatabaseConnectionOk() {
-    console.log(`\x1b[30mChecking database connection...`);
+async function assertConnections() {
+    // sequelize connection
+    console.log(`\x1b[30mConnecting to the database...`);
     try {
         await sequelize.authenticate();
-        console.log('Database connection OK!');
+        console.log('\x1b[30mDatabase connected!');
     } catch (error) {
         console.log('\x1b[30mUnable to connect to the database.');
         console.log('\x1b[31m' + error.message + '\x1b[0m');
         process.exit(1);
     }
+
+    if (!!supabase) {
+        console.log('Supabase connected!')
+    } else {
+        console.log('Unable to connect to Supabase.');
+        process.exit(1);
+    }
+
 }
 async function init() {
     console.log('\x1b[30mStarting backend in ' + process.env.MODE + ' mode...');
-    await assertDatabaseConnectionOk();
+    await assertConnections();
     app.listen(port, () => {
         (process.env.MODE === "dev") ?
             console.log('\x1b[30mBackend online! \x1b[0m\x1b[34m▶ http://localhost:' + port + '\x1b[0m\n') :
