@@ -56,6 +56,7 @@ app.use(
     }).unless({
         path: [
             { url: '/user', methods: ['POST'] },
+            { url: '/user/supabase_login', methods: ['GET'] },
             { url: '/user/login', methods: ['POST'] },
             { url: '/' },
 

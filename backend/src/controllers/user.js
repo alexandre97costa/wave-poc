@@ -1,5 +1,5 @@
-
 var sequelize = require('../config/database')
+var supabase = require('../config/supabase')
 const { Op } = require("sequelize")
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
@@ -49,8 +49,8 @@ module.exports = {
         const options = {
             algorithm: process.env.JWT_ALGORITHM,
             expiresIn: process.env.MODE === "dev" ?
-                259200 :    // 3 dias
-                900         // 15 minutos
+                259200 :    // 3 dias em modo dev
+                900         // 15 minutos em modo prod
         }
 
         return res.status(200).json({
@@ -309,5 +309,36 @@ module.exports = {
                 dev.error(error)
                 return
             })
+    },
+
+    // Helpers
+
+    required_params: ({ params = [], body = {}, res = {} }) => {
+        if (!params.isArray()) return dev.error('"Params" need to be an array.');
+
+        const has_all_required = params.every(param => req.body.hasOwnProperty(param))
+        if (!has_all_required) {
+            return res.status(400).json({ 
+                msg: 'Missing required params.', 
+                required_params 
+            })
+        }
+    },
+
+    // SUPABASE BL
+
+    supabase_signup: async (req, res) => {
+
+        this.required_params({ params: ['email', 'password'], body: req.body, res})
+
+        const { email, password } = req.body
+
+
+        let { data, error } = await supabase.auth
+            .signUp({ email: email, password: password })
+
+        return (error) ? 
+            res.status(200).json({data}) :
+            res.status(error.status).json({error})
     }
 }

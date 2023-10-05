@@ -12,5 +12,7 @@ router.patch('/:id/tipo', u.mudar_tipo)
 router.patch('/:id/password', u.mudar_pw)
 router.delete('/:id', u.delete)
 
+router.get('/supabase_login', u.supabase_signup)
+
 
 module.exports = router;

@@ -1,6 +1,6 @@
 
 var sequelize = require('../config/database')
-const supabase = require('../config/supabase')
+var supabase = require('../config/supabase')
 const userController = require('./user.js')
 const bulk_users = require('../_dev/request bodies/create_user_in_bulk.json')
 const bulk_waves = require('../_dev/request bodies/create_wave_in_bulk.json')
