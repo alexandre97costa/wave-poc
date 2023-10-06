@@ -11,6 +11,17 @@ const {
     Wave
 } = sequelize.models
 
+function has_required_params (params = [], body = {}) {
+
+    if (!Array.isArray(params)) {
+        dev.error('"Params" need to be an array.');
+        return false;
+    } 
+
+    const has_all_required = params.every(param => body.hasOwnProperty(param));
+    return has_all_required;
+}
+
 
 module.exports = {
 
@@ -311,28 +322,15 @@ module.exports = {
             })
     },
 
-    // Helpers
-
-    required_params: ({ params = [], body = {}, res = {} }) => {
-        if (!params.isArray()) return dev.error('"Params" need to be an array.');
-
-        const has_all_required = params.every(param => req.body.hasOwnProperty(param))
-        if (!has_all_required) {
-            return res.status(400).json({ 
-                msg: 'Missing required params.', 
-                required_params 
-            })
-        }
-    },
 
     // SUPABASE BL
 
     supabase_signup: async (req, res) => {
 
-        this.required_params({ params: ['email', 'password'], body: req.body, res})
-
+        let params = ['email', 'password'];
+        if (!has_required_params(params, req.body)) return res.status(400).json({msg: 'Missing required params', params})
+        
         const { email, password } = req.body
-
 
         let { data, error } = await supabase.auth
             .signUp({ email: email, password: password })
